@@ -18,6 +18,8 @@ def add_info():
   try:
     global info
     data = request.get_json(silent=True)
+    if len(info) > 5000:
+      info = info[len(info) / 2:]
     info.append([data['x'], data['y'], data['z']])
     return read_info()
   except Exception as e:
