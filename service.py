@@ -17,10 +17,8 @@ def read_info():
 def add_info():
   try:
     global info
-    data = map(float, request.data.split(","))
-    if len(data) != 3:
-      raise
-    info.append(data)
+    json = request.get_json()
+    info.append([json['x'], json['y'], json['z']])
     return read_info()
   except Exception as e:
     return json.jsonify(InvalidUsage('error').to_dict())
