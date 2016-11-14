@@ -17,11 +17,11 @@ def read_info():
 def add_info():
   try:
     global info
-    data = request.get_json()
+    data = request.get_json(silent=True)
     info.append([data['x'], data['y'], data['z']])
     return read_info()
   except Exception as e:
-    return json.jsonify(InvalidUsage('error').to_dict())
+    return json.jsonify(InvalidUsage(str(e)).to_dict())
 
 @app.route("/info", methods = ['DELETE'])
 def delete_info():
