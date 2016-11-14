@@ -21,7 +21,7 @@ def add_info():
     info.append([json['x'], json['y'], json['z']])
     return read_info()
   except Exception as e:
-    return json.jsonify(InvalidUsage('error').to_dict())
+    return jsonify(InvalidUsage('error').to_dict())
 
 @app.route("/info", methods = ['DELETE'])
 def delete_info():
