@@ -2,134 +2,64 @@
 <html>
 <head>
   <title>Visualization</title>
+  <style type="text/css">
+    #container {
+      height: 400px;
+      min-width: 310px;
+      max-width: 100%;
+      margin: 0 auto;
+  }
+  </style>
+
+  <!--Import Google Icon Font-->
+  <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css" media="screen,projection">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 </head>
 
-<style type="text/css">
-  #container {
-    height: 400px;
-    min-width: 310px;
-    max-width: 800px;
-    margin: 0 auto;
-}
-</style>
 <body>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
   <script src="https://code.highcharts.com/highcharts.js"></script>
   <script src="https://code.highcharts.com/highcharts-3d.js"></script>
   <script src="https://code.highcharts.com/modules/exporting.js"></script>
 
-  <div id="container" style="height: 400px"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col s12">
+        <div id="chart_container" style="height: 500px">
+          <div class="progress">
+            <div class="indeterminate"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col s6">
+        <h5>Aceleración</h5>
+        <div>Total: <span id="total_acceleration"></span></div>
+        <div>X: <span id="x_acceleration"></span></div>
+        <div>Y: <span id="y_acceleration"></span></div>
+        <div>Z: <span id="z_acceleration"></span></div>
 
+
+      </div>
+      <div class="col s6">
+        <h5>Precisión</h5>
+        <div>Total: <span id="total_punches"></span></div>
+        <div>Golpes Buenos: <span id="good_punches"></span></div>
+        <div>Golpes Malos: <span id="bad_punches"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
   <script type="text/javascript">
     $(function () {
-
-
-      $.ajax('/info')
-        .done(function(data) {
-          console.log(data);
-          // Give the points a 3D feel by adding a radial gradient
-          Highcharts.getOptions().colors = $.map(Highcharts.getOptions().colors, function (color) {
-              return {
-                  radialGradient: {
-                      cx: 0.4,
-                      cy: 0.3,
-                      r: 0.5
-                  },
-                  stops: [
-                      [0, color],
-                      [1, Highcharts.Color(color).brighten(-0.2).get('rgb')]
-                  ]
-              };
-          });
-          var chart = new Highcharts.Chart({
-              chart: {
-                  renderTo: 'container',
-                  margin: 100,
-                  type: 'scatter',
-                  options3d: {
-                      enabled: true,
-                      alpha: 10,
-                      beta: 30,
-                      depth: 250,
-                      viewDistance: 5,
-                      fitToPlot: false,
-                      frame: {
-                          bottom: { size: 1, color: 'rgba(0,0,0,0.02)' },
-                          back: { size: 1, color: 'rgba(0,0,0,0.04)' },
-                          side: { size: 1, color: 'rgba(0,0,0,0.06)' }
-                      }
-                  }
-              },
-              title: {
-                  text: 'Punch'
-              },
-              plotOptions: {
-                  scatter: {
-                      width: 20,
-                      height: 20,
-                      depth: 20
-                  }
-              },
-              yAxis: {
-                  min: -24,
-                  max: 24,
-                  title: null
-              },
-              xAxis: {
-                  min: -24,
-                  max: 24,
-                  gridLineWidth: 1
-              },
-              zAxis: {
-                  min: -24,
-                  max: 24,
-                  showFirstLabel: false
-              },
-              legend: {
-                  enabled: false
-              },
-              series: [{
-                  name: 'Punch',
-                  colorByPoint: true,
-                  data: data
-              }]
-          });
-          // Add mouse events for rotation
-          $(chart.container).on('mousedown.hc touchstart.hc', function (eStart) {
-              eStart = chart.pointer.normalize(eStart);
-
-              var posX = eStart.pageX,
-                  posY = eStart.pageY,
-                  alpha = chart.options.chart.options3d.alpha,
-                  beta = chart.options.chart.options3d.beta,
-                  newAlpha,
-                  newBeta,
-                  sensitivity = 5; // lower is more sensitive
-
-              $(document).on({
-                  'mousemove.hc touchdrag.hc': function (e) {
-                      // Run beta
-                      newBeta = beta + (posX - e.pageX) / sensitivity;
-                      chart.options.chart.options3d.beta = newBeta;
-
-                      // Run alpha
-                      newAlpha = alpha + (e.pageY - posY) / sensitivity;
-                      chart.options.chart.options3d.alpha = newAlpha;
-
-                      chart.redraw(false);
-                  },
-                  'mouseup touchend': function () {
-                      $(document).off('.hc');
-                  }
-              });
-          });
-        });
-      // Set up the chart
-
-
-
-
-  });
+      drawChart();
+      renderPunches();
+      renderAcceleration();
+    });
   </script>
 </body>
 </html>
