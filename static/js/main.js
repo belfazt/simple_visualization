@@ -35,7 +35,7 @@ function drawChart() {
               }
           },
           title: {
-              text: 'Punch'
+              text: 'Aceleración'
           },
           plotOptions: {
               scatter: {
@@ -110,11 +110,22 @@ function renderPunches() {
 }
 
 function renderAcceleration() {
-  $.ajax('/acceleration')
+  $.ajax('/info')
     .done(function(data) {
-      $('#total_acceleration').html(Math.sqrt(data[0] * data[0] + data[1] * data[1] + data[2] + data[2]));
-      $('#x_acceleration').html(data[0]);
-      $('#y_acceleration').html(data[1]);
-      $('#z_acceleration').html(data[2]);
+      var html = '';
+      for (var i = 0; i < data.length; i++) {
+        for (var j = 0; i < data[i].length; j++) {
+          data[i][j] *= mass.mass;
+        }
+        html += '<tr>';
+        html += '<td>' + Math.sqrt(Math.abs(data[i][0] * data[i][0]) + Math.abs(data[i][1] * data[i][1]) + Math.abs(data[i][2] * data[i][2])) + '</td>'
+        html += '<td>' + data[i][0] + '</td>'
+        html += '<td>' + data[i][1] + '</td>'
+        html += '<td>' + data[i][2] + '</td>'
+        html += '</tr>';
+        console.log(data[i]);
+      }
+      $('#table_body').html(html);
     });
+
 }
