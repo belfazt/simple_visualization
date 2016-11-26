@@ -110,22 +110,29 @@ function renderPunches() {
 }
 
 function renderAcceleration() {
-  $.ajax('/info')
-    .done(function(data) {
-      var html = '';
-      for (var i = 0; i < data.length; i++) {
-        for (var j = 0; i < data[i].length; j++) {
-          data[i][j] *= mass.mass;
-        }
-        html += '<tr>';
-        html += '<td>' + Math.sqrt(Math.abs(data[i][0] * data[i][0]) + Math.abs(data[i][1] * data[i][1]) + Math.abs(data[i][2] * data[i][2])) + '</td>'
-        html += '<td>' + data[i][0] + '</td>'
-        html += '<td>' + data[i][1] + '</td>'
-        html += '<td>' + data[i][2] + '</td>'
-        html += '</tr>';
-        console.log(data[i]);
-      }
-      $('#table_body').html(html);
-    });
-
+  var data = [];
+  $.ajax('/info').then(function(info) {
+    data = info;
+    return $.ajax('/mass');
+  }).then(function(mass) {
+    var html = '';
+    mass = mass.mass;
+    console.log(mass);
+    for (var i = data.length - 1; i >= 0; i--) {
+      data[i] = data[i].map(function(x) { return x * mass; });
+    }
+    console.log(data);
+    for (var i = 0; i < data.length; i++) {
+      html += '<tr>';
+      html += '<td>' + Math.sqrt(Math.abs(data[i][0] * data[i][0]) + Math.abs(data[i][1] * data[i][1]) + Math.abs(data[i][2] * data[i][2])) + '</td>'
+      html += '<td>' + data[i][0] + '</td>'
+      html += '<td>' + data[i][1] + '</td>'
+      html += '<td>' + data[i][2] + '</td>'
+      html += '</tr>';
+    }
+    console.log(html);
+    $('#table_body').html(html);
+  }, function(err) {
+    console.log(err);
+  });
 }

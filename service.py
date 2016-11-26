@@ -26,7 +26,7 @@ def add_info():
     global acceleration
     global punches
     data = request.get_json(silent=True)
-    if len(info) > 50:
+    if len(info) > 300:
       info = info[len(info) / 2:]
     info.append([data['x'], data['y'], data['z']])
     punches['good_punches'] = data['good_punches']
@@ -39,10 +39,10 @@ def add_info():
 def read_mass():
   return json.jsonify({'mass': mass})
 
-@app.route("/mass", methods = ['POST'])
-def define_mass():
+@app.route("/mass/<int:mass2>", methods = ['POST'])
+def define_mass(mass2):
   global mass
-  mass = request.get_json(silent=True)['mass']
+  mass = mass2
   return read_mass()
 
 @app.route("/info", methods = ['DELETE'])
