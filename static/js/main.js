@@ -4,24 +4,31 @@ function drawChart() {
     var points = [];
 
     for (var i = info.length - 1; i >= 0; i--) {
-      points[i] = Math.sqrt(Math.abs(info[i][0] * info[i][0]) + Math.abs(info[i][1] * info[i][1]) + Math.abs(info[i][2] * info[i][2]));
+      points[i] = {
+        x: i,
+        y: Math.sqrt(Math.abs(info[i][0] * info[i][0]) + Math.abs(info[i][1] * info[i][1]) + Math.abs(info[i][2] * info[i][2]))
+      }
     }
 
     console.log(points);
 
     var ctx = $("#myChart");
-    var myLineChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: ['Magnitud'],
-          datasets: [
-            {
-              type: 'line',
+    var scatterChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+          datasets: [{
               label: 'Magnitud',
               data: points
-            }
-          ]
-        }
+          }]
+      },
+      options: {
+          scales: {
+              xAxes: [{
+                  type: 'linear',
+                  position: 'bottom'
+              }]
+          }
+      }
     });
   });
 }
