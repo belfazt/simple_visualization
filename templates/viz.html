@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Visualization</title>
+  <title>Box Training Assistant</title>
 
   <!--Import Google Icon Font-->
   <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -10,7 +10,22 @@
 </head>
 
 <body>
+
   <div class="container">
+    <h2>Box Training Assistant</h2>
+    <div class="row">
+      <div class="col s6">
+        <!-- Switch -->
+        <div class="switch">
+          <label>
+            Fuerza G
+            <input type="checkbox" id="gforce_toggle" onchange="render()">
+            <span class="lever"></span>
+            Newtons
+          </label>
+        </div>
+      </div>
+    </div>
     <div class="row">
       <div class="col s12">
         <canvas id="myChart" width="400" height="200"></canvas>
@@ -30,7 +45,6 @@
         </thead>
 
         <tbody id="table_body">
-
         </tbody>
       </table>
 
@@ -51,9 +65,8 @@
   <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
   <script type="text/javascript">
     $(function () {
-      drawChart();
+      render();
       renderPunches();
-      renderAcceleration();
     });
   </script>
 </body>
