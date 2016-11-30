@@ -1,103 +1,29 @@
 function drawChart() {
-  $.ajax('/info')
-    .done(function(data) {
-      // Give the points a 3D feel by adding a radial gradient
-      Highcharts.getOptions().colors = $.map(Highcharts.getOptions().colors, function (color) {
-          return {
-              radialGradient: {
-                  cx: 0.4,
-                  cy: 0.3,
-                  r: 0.5
-              },
-              stops: [
-                  [0, color],
-                  [1, Highcharts.Color(color).brighten(-0.2).get('rgb')]
-              ]
-          };
-      });
-      var chart = new Highcharts.Chart({
-          chart: {
-              renderTo: 'chart_container',
-              margin: 100,
-              type: 'scatter',
-              options3d: {
-                  enabled: true,
-                  alpha: 10,
-                  beta: 30,
-                  depth: 250,
-                  viewDistance: 5,
-                  fitToPlot: false,
-                  frame: {
-                      bottom: { size: 1, color: 'rgba(0,0,0,0.02)' },
-                      back: { size: 1, color: 'rgba(0,0,0,0.04)' },
-                      side: { size: 1, color: 'rgba(0,0,0,0.06)' }
-                  }
-              }
-          },
-          title: {
-              text: 'Aceleración'
-          },
-          plotOptions: {
-              scatter: {
-                  width: 20,
-                  height: 20,
-                  depth: 20
-              }
-          },
-          yAxis: {
-              min: -24,
-              max: 24,
-              title: null
-          },
-          xAxis: {
-              min: -24,
-              max: 24,
-              gridLineWidth: 1
-          },
-          zAxis: {
-              min: -24,
-              max: 24,
-              showFirstLabel: false
-          },
-          legend: {
-              enabled: false
-          },
-          series: [{
-              name: 'Punch',
-              colorByPoint: true,
-              data: data
-          }]
-      });
-      // Add mouse events for rotation
-      $(chart.container).on('mousedown.hc touchstart.hc', function (eStart) {
-          eStart = chart.pointer.normalize(eStart);
+  $.ajax('/info').done(function(info) {
 
-          var posX = eStart.pageX,
-              posY = eStart.pageY,
-              alpha = chart.options.chart.options3d.alpha,
-              beta = chart.options.chart.options3d.beta,
-              newAlpha,
-              newBeta,
-              sensitivity = 5; // lower is more sensitive
+    var points = [];
 
-          $(document).on({
-              'mousemove.hc touchdrag.hc': function (e) {
-                  // Run beta
-                  newBeta = beta + (posX - e.pageX) / sensitivity;
-                  chart.options.chart.options3d.beta = newBeta;
+    for (var i = info.length - 1; i >= 0; i--) {
+      points[i] = Math.sqrt(Math.abs(info[i][0] * info[i][0]) + Math.abs(info[i][1] * info[i][1]) + Math.abs(info[i][2] * info[i][2]));
+    }
 
-                  // Run alpha
-                  newAlpha = alpha + (e.pageY - posY) / sensitivity;
-                  chart.options.chart.options3d.alpha = newAlpha;
+    console.log(points);
 
-                  chart.redraw(false);
-              },
-              'mouseup touchend': function () {
-                  $(document).off('.hc');
-              }
-          });
-      });
+    var ctx = $("#myChart");
+    var myLineChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: ['Magnitud'],
+          datasets: [
+            {
+              type: 'line',
+              label: 'Magnitud',
+              data: points
+            }
+          ]
+        }
     });
+  });
 }
 
 function renderPunches() {
@@ -130,7 +56,6 @@ function renderAcceleration() {
       html += '<td>' + data[i][2] + '</td>'
       html += '</tr>';
     }
-    console.log(html);
     $('#table_body').html(html);
   }, function(err) {
     console.log(err);

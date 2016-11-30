@@ -2,14 +2,6 @@
 <html>
 <head>
   <title>Visualization</title>
-  <style type="text/css">
-    #container {
-      height: 400px;
-      min-width: 310px;
-      max-width: 100%;
-      margin: 0 auto;
-  }
-  </style>
 
   <!--Import Google Icon Font-->
   <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -18,19 +10,10 @@
 </head>
 
 <body>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-  <script src="https://code.highcharts.com/highcharts.js"></script>
-  <script src="https://code.highcharts.com/highcharts-3d.js"></script>
-  <script src="https://code.highcharts.com/modules/exporting.js"></script>
-
   <div class="container">
     <div class="row">
       <div class="col s12">
-        <div id="chart_container" style="height: 500px">
-          <div class="progress">
-            <div class="indeterminate"></div>
-          </div>
-        </div>
+        <canvas id="myChart" width="400" height="200"></canvas>
       </div>
     </div>
     <div class="row">
@@ -62,7 +45,9 @@
     </div>
   </div>
 
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.bundle.min.js"></script>
   <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
   <script type="text/javascript">
     $(function () {
